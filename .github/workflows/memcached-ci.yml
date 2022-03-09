@@ -1,0 +1,25 @@
+name: memcached-ci
+on:
+  push:
+    branches: [ main ]
+    
+env:
+  MEMCACHED_VERSION: "1.6.14"
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    container:
+      image: amazonlinux:2022
+    steps:
+      - name: Checkout Repo
+        uses: actions/checkout@v2
+      - name: Check out memcached
+        uses: actions/checkout@v2
+        with:
+          repository: memcached/memcached
+          path: memcached
+          ref: ${{ env.MEMCACHED_VERSION }}
+      - name: Run test
+        working-directory: ./memcached
+        run: ../amazonlinux/test-memcached.sh
