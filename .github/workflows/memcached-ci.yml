@@ -15,7 +15,8 @@ jobs:
       - name: Install essentials
         run: |
           yum install -y \
-            tar
+            tar \
+            gzip
       - name: Checkout Repo
         uses: actions/checkout@v2
       - name: Check out memcached
