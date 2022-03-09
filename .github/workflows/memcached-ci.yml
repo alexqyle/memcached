@@ -12,6 +12,10 @@ jobs:
     container:
       image: amazonlinux:2022
     steps:
+      - name: Install essentials
+        run: |
+          yum install -y \
+            tar
       - name: Checkout Repo
         uses: actions/checkout@v2
       - name: Check out memcached
