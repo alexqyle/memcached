@@ -28,3 +28,20 @@ jobs:
       - name: Run test
         working-directory: ./memcached
         run: ../amazonlinux/test-memcached.sh
+
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Repo
+        uses: actions/checkout@v2
+      - name: Check out memcached
+        uses: actions/checkout@v2
+        with:
+          repository: memcached/memcached
+          path: memcached
+          ref: ${{ env.MEMCACHED_VERSION }}
+    steps:
+      - name: Build image
+        run: |
+          docker build -t memcached:amazonlinux2 ./amazonlinux
+          docker images
