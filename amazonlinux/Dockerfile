@@ -13,7 +13,7 @@ RUN set -x \
   \
   && cd /usr/src/memcached \
   \
-  && source build-memcached-helper.sh \
+  && source ./build-memcached-helper.sh \
   \
   && build_memcached \
   \
