@@ -4,10 +4,18 @@ on:
     branches: [ master ]
     
 env:
-  MEMCACHED_VERSION: "1.6.14"
+  MEMCACHED_VERSION: "dummy" # Should be set from build/version file
 
 jobs:
+  init:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Repo
+        uses: actions/checkout@v2
+      - name: Read memcached version
+        run: cat build/version >> $GITHUB_ENV 
   test:
+    needs: [init]
     runs-on: ubuntu-latest
     container:
       image: amazonlinux:2022
@@ -30,7 +38,7 @@ jobs:
         run: ../amazonlinux/test-memcached.sh
 
   build:
-    runs-on: ubuntu-latest
+    needs: [init]
     steps:
       - name: Checkout Repo
         uses: actions/checkout@v2
