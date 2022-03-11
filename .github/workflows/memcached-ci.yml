@@ -2,18 +2,20 @@ name: memcached-ci
 on:
   push:
     branches: [ master ]
-    
-env:
-  MEMCACHED_VERSION: "dummy" # Should be set from build/version file
 
 jobs:
   init:
     runs-on: ubuntu-latest
+    outputs:
+      memcached-version: ${{ steps.memcached_version.outputs.version }}
     steps:
       - name: Checkout Repo
         uses: actions/checkout@v2
       - name: Read memcached version
-        run: cat build/version >> $GITHUB_ENV 
+        id: memcached_version
+        run: |
+          source build/version
+          echo "::set-output name=version::${MEMCACHED_VERSION}"
   test:
     needs: [init]
     runs-on: ubuntu-latest
@@ -32,7 +34,7 @@ jobs:
         with:
           repository: memcached/memcached
           path: memcached
-          ref: ${{ env.MEMCACHED_VERSION }}
+          ref: ${{ needs.init.outputs.memcached-version }}
       - name: Run test
         working-directory: ./memcached
         run: ../amazonlinux/test-memcached.sh
@@ -48,7 +50,7 @@ jobs:
         with:
           repository: memcached/memcached
           path: amazonlinux/memcached
-          ref: ${{ env.MEMCACHED_VERSION }}
+          ref: ${{ needs.init.outputs.memcached-version }}
       - name: Build image
         working-directory: ./amazonlinux
         run: |
